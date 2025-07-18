@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 CREATE TABLE activity_log (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_pengguna INT,
@@ -154,3 +155,161 @@ BEGIN
         total_tarif_total = total_total;
 END//
 DELIMITER ;
+=======
+CREATE TABLE activity_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_pengguna INT,
+    activity_type ENUM('Tambah', 'Ubah'),
+    table_name VARCHAR(255),
+    record_id INT,
+    activity_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna)
+);
+
+
+DELIMITER //
+CREATE TRIGGER kategori_after_update
+AFTER UPDATE ON kategori
+FOR EACH ROW
+BEGIN
+    INSERT INTO activity_log (id_pengguna, activity_type, table_name)
+    VALUES (NEW.id_pengguna, 'Ubah Data', 'kategori');
+END;
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER kategori_after_delete
+AFTER DELETE ON kategori
+FOR EACH ROW
+BEGIN
+    INSERT INTO activity_log (id_pengguna, activity_type, table_name)
+    VALUES (OLD.id_pengguna, 'Hapus Data', 'kategori');
+END;
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER kategori_after_insert
+AFTER INSERT ON kategori
+FOR EACH ROW
+BEGIN
+    INSERT INTO activity_log (id_pengguna, activity_type, table_name)
+    VALUES (NEW.id_pengguna, 'Tambah Data', 'kategori');
+END;
+//
+DELIMITER ;
+
+ALTER TABLE cabang
+ADD COLUMN id_pengguna INT,
+ADD FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna);
+
+
+
+
+tolong buatkann saya code untuk membuat table activity pengguna yang memilki foreign key dari tabel pengguna dari database 'simpel' saya 
+Dimana tabel activity_log tersebut menyimpan informasi terkait aktivitas pengguna tentang mengubah dan menambah data dari tabel - tabel yang lain
+
+Berikut struktur database saya
+1. Tabel Cabang
+- cabang_id : int
+- nama_cabang : varchar(255)
+
+2. Tabel Jenis
+- data_id : int
+- cabang_id : int
+- nama_data :enum('DATA PLG', 'DATA VA', 'DATA KWH')
+
+3. Tabel Klasifikasi
+- klasifikasi_id : int
+- data_id :  int
+- jenis_klasifikasi : enum('Pra Bayar', 'Pasca Bayar')
+
+4. Tabel Kategori
+- kategori_id : int
+- klasifikasi_id : int
+- bulan : date 
+- tarif_s : varchar(200)
+- tarif_r : varchar(200)
+- tarif_b : varchar(200)
+- tarif_i : varchar(200)
+- tarif_p : varchar(200)
+- tarif_total : int
+
+5. Tabel Pengguna
+- id_pengguna : int
+- nama_pengguna : varchar(200)
+- level : int
+- username : varchar(200)
+- password : varchar(200)
+
+Buatkann juga code untuk buat trigger dan apakah pada tabel lain nya tidak perlu menambahkan field [id_pengguna]?
+
+Jika ada buatkan juga kode untuk perintah pembuatn field id_pengguna ke dalam yang membutuhkannya
+
+
+-- Buat tabel baru untuk menyimpan hasil akumulasi
+CREATE TABLE pusat (
+    klasifikasi_id INT PRIMARY KEY,
+    total_tarif_s INT,
+    total_tarif_r INT,
+    total_tarif_b INT,
+    total_tarif_i INT,
+    total_tarif_p INT,
+    total_tarif_total INT
+);
+
+-- Hitung akumulasi data untuk setiap klasifikasi
+INSERT INTO pusat (klasifikasi_id, total_tarif_s, total_tarif_r, total_tarif_b, total_tarif_i, total_tarif_p, total_tarif_total)
+SELECT 
+    kategori.klasifikasi_id,
+    SUM(kategori.tarif_s) AS total_tarif_s,
+    SUM(kategori.tarif_r) AS total_tarif_r,
+    SUM(kategori.tarif_b) AS total_tarif_b,
+    SUM(kategori.tarif_i) AS total_tarif_i,
+    SUM(kategori.tarif_p) AS total_tarif_p,
+    SUM(kategori.tarif_total) AS total_tarif_total
+FROM kategori AS kategori
+GROUP BY kategori.klasifikasi_id;
+
+-- Kode SQL tambahan sesuai kebutuhan Anda
+
+
+
+
+
+TRIGGER UNTUK OTOMATIS akumulasi DATA CABANG
+-- Buat trigger untuk menghitung dan menyimpan hasil akumulasi
+DELIMITER //
+CREATE TRIGGER hitung_dan_simpan_akumulasi AFTER INSERT ON kategori
+FOR EACH ROW
+BEGIN
+    DECLARE total_s INT;
+    DECLARE total_r INT;
+    DECLARE total_b INT;
+    DECLARE total_i INT;
+    DECLARE total_p INT;
+    
+    -- Hitung total tarif untuk klasifikasi yang baru dimasukkan
+    SELECT SUM(tarif_s), SUM(tarif_r), SUM(tarif_b), SUM(tarif_i), SUM(tarif_p)
+    INTO total_s, total_r, total_b, total_i, total_p
+    FROM kategori
+    WHERE klasifikasi_id = NEW.klasifikasi_id;
+
+    -- Hitung total tarif keseluruhan
+    DECLARE total_total INT;
+    SET total_total = total_s + total_r + total_b + total_i + total_p;
+
+    -- Simpan hasil akumulasi ke tabel baru atau perbarui jika sudah ada
+    INSERT INTO pusat (klasifikasi_id, total_tarif_s, total_tarif_r, total_tarif_b, total_tarif_i, total_tarif_p, total_tarif_total)
+    VALUES (NEW.klasifikasi_id, total_s, total_r, total_b, total_i, total_p, total_total)
+    ON DUPLICATE KEY UPDATE
+        total_tarif_s = total_s,
+        total_tarif_r = total_r,
+        total_tarif_b = total_b,
+        total_tarif_i = total_i,
+        total_tarif_p = total_p,
+        total_tarif_total = total_total;
+END//
+DELIMITER ;
+>>>>>>> 0e0f36d5d74759de76101961c6836281933b8d9d
