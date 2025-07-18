@@ -1,0 +1,12 @@
+CRITICAL - 2024-01-26 21:06:13 --> Undefined variable $judul
+#0 C:\laragon\www\ci4dev\app\Views\layout\default.php(7): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined varia...', 'C:\\laragon\\www\\...', 7)
+#1 C:\laragon\www\ci4dev\system\View\View.php(210): include('C:\\laragon\\www\\...')
+#2 C:\laragon\www\ci4dev\system\View\View.php(213): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 C:\laragon\www\ci4dev\system\Common.php(1089): CodeIgniter\View\View->render('layout/default', Array, true)
+#4 C:\laragon\www\ci4dev\app\Controllers\Home.php(14): view('layout/default')
+#5 C:\laragon\www\ci4dev\system\CodeIgniter.php(832): App\Controllers\Home->main()
+#6 C:\laragon\www\ci4dev\system\CodeIgniter.php(419): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+#7 C:\laragon\www\ci4dev\system\CodeIgniter.php(326): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\laragon\www\ci4dev\public\index.php(37): CodeIgniter\CodeIgniter->run()
+#9 C:\laragon\www\ci4dev\system\Commands\Server\rewrite.php(43): require_once('C:\\laragon\\www\\...')
+#10 {main}
