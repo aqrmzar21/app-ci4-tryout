@@ -1,69 +1,43 @@
 <?php
 
-namespace Config;
+use CodeIgniter\Router\RouteCollection;
 
-// Create a new instance of our RouteCollection class.
-$routes = Services::routes();
-
-// Load the system's routing file first, so that the app and ENVIRONMENT
-// can override as needed.
-if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
-    require SYSTEMPATH . 'Config/Routes.php';
-}
-
-/*
- * --------------------------------------------------------------------
- * Router Setup
- * --------------------------------------------------------------------
+/**
+ $routes->get('/lic', function () {
+   echo 'hello beb';
+   });
+   $routes->get('/coba/dex', 'Coba::dex');
+   $routes->get('/coba', 'Coba::about');
+   $routes->get('/pages/contact', 'Home::contact');
+   $routes->get('/coba/(:any)', 'Coba::about/$1');
+   // INFO:  any = angka, karakter, alfa; num = anka only, alpha = alfabet;, segment = apapun selain slas; alphanum = angka dan alfabet only
+   $routes->get('/public', 'Coba::about');
+   // cara membuat database dengan pemanfaatan routes
+   $routes->get('create-db', function() {
+     $forge = \Config\Database::forge();
+     if ($forge->createDatabase('komik')) {
+       echo 'Database created!';
+   }
+   });
+ * @var RouteCollection $routes
  */
-$routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('Home');
-$routes->setDefaultMethod('index');
-$routes->setTranslateURIDashes(false);
-$routes->set404Override();
-$routes->setAutoRoute(true);
 
-/*
- * --------------------------------------------------------------------
- * Route Definitions
- * --------------------------------------------------------------------
- */
-// INi adalah command membuat Database menggunakan Migration
-$routes->get('create-db', function () {
-    $forge = \Config\Database::forge();
-    if ($forge->createDatabase('simplenn')) {
-        echo "Database berhasil di buat";
-    }
-});
+$routes->get('/', 'Home::index');
+// $routes->get('/pages/about', 'Home::about');
+$routes->get('/pages/about', 'Orang::index');
+// $routes->post('/pages/about/(:segment)', 'Orang::index/$1');
 
+$routes->post('/pages/about', 'Orang::index');
 
-// We get a performance increase by specifying the default
-// route since we don't have to scan directories.
-// $routes->get('/', 'Home::index');
-$routes->get('/', 'Pages::index');
-$routes->delete('/up3/(:num)', 'UP3::delete/$1');
-// $routes->deleteva('/up3/(:num)', 'UP3::deleteva/$1');
-// $routes->get('/', 'Pages::index');
+$routes->get('/komik/create', 'Komik::create');
+$routes->post('/komik/save', 'Komik::save');
+// $routes->post('/komik/update', 'Komik::update');
+$routes->post('/komik/update/(:num)', 'Komik::update/$1');
+$routes->get('/komik/edit/(:segment)', 'Komik::edit/$1');
+// $routes->post('/komik/delete', 'Komik::delete');
+$routes->delete('/komik/(:num)', 'Komik::delete/$1');
 
-// USER 
-$routes->get('/pengguna/', 'Pengguna::index');
-$routes->get('/pengguna/edituser/(:num)', 'Pengguna::edit/$1');
-// $routes->get('/pengguna/edituser/(:num)', 'Pengguna::update');
-$routes->get('/pengguna/destroy/(:num)', 'Pengguna::edit/$1');
-
-/*
- * --------------------------------------------------------------------
- * Additional Routing
- * --------------------------------------------------------------------
- *
- * There will often be times that you need additional routing and you
- * need it to be able to override any defaults in this file. Environment
- * based routes is one such time. require() additional route files here
- * to make that happen.
- *
- * You will have access to the $routes object within that file without
- * needing to reload it.
- */
-if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php')) {
-    require APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php';
-}
+$routes->get('/komik', 'Komik::index');
+$routes->get('/komik/(:any)', 'Komik::detail/$1');
+$routes->get('/pages/contact', 'Komik::comic');
+$routes->get('/pages/contact/(:segment)', 'Komik::detail/$1');

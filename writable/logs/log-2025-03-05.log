@@ -1,9 +1,0 @@
-CRITICAL - 2025-03-05 23:17:10 --> strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
-#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(8192, 'strtotime(): Pa...', 'C:\\laragon\\www\\...', 216)
-#1 C:\laragon\www\ci4dev\app\Controllers\UP3.php(216): strtotime(NULL)
-#2 C:\laragon\www\ci4dev\system\CodeIgniter.php(832): App\Controllers\UP3->datava()
-#3 C:\laragon\www\ci4dev\system\CodeIgniter.php(419): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\UP3))
-#4 C:\laragon\www\ci4dev\system\CodeIgniter.php(326): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
-#5 C:\laragon\www\ci4dev\public\index.php(37): CodeIgniter\CodeIgniter->run()
-#6 C:\laragon\www\ci4dev\system\Commands\Server\rewrite.php(43): require_once('C:\\laragon\\www\\...')
-#7 {main}
